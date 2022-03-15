@@ -1,7 +1,7 @@
 NEAR Protocol Attendance Chain
 ==================
 
-This app was initialized with [create-near-app]
+This app was initialized with [create-near-app].
 
 
 Quick Start
@@ -30,24 +30,24 @@ Exploring The Code
    can learn how the frontend connects to the NEAR blockchain.
 3. Tests: there are different kinds of tests for the frontend and the smart
    contract. See `contract/README` for info about how it's tested. The frontend
-   code gets tested with [jest]. You can run both of these at once with `yarn
+   code gets tested with [jest]. You can run both of these at once with `npm
    run test`.
 
 
 Deploy
 ======
 
-Every smart contract in NEAR has its [own associated account][NEAR accounts]. When you run `yarn dev`, your smart contract gets deployed to the live NEAR TestNet with a throwaway account. When you're ready to make it permanent, here's how.
+Every smart contract in NEAR has its [own associated account][NEAR accounts]. When you run `npm run dev`, your smart contract gets deployed to the live NEAR TestNet with a throwaway account. When you're ready to make it permanent, here's how.
 
 
 Step 0: Install near-cli (optional)
 -------------------------------------
 
-[near-cli] is a command line interface (CLI) for interacting with the NEAR blockchain. It was installed to the local `node_modules` folder when you ran `yarn install`, but for best ergonomics you may want to install it globally:
+[near-cli] is a command line interface (CLI) for interacting with the NEAR blockchain. It was installed to the local `node_modules` folder when you ran `npm i`, but for best ergonomics you may want to install it globally:
 
-    yarn install --global near-cli
+    npm install --global near-cli
 
-Or, if you'd rather use the locally-installed version, you can prefix all `near` commands with `npx`
+Or, if you'd rather use the locally-installed version, you can prefix all `near` commands with `npx`,.
 
 Ensure that it's installed with `near --version` (or `npx near --version`)
 
@@ -79,7 +79,7 @@ Step 3: deploy!
 
 One command:
 
-    yarn deploy
+    npm run deploy
 
 As you can see in `package.json`, this does two things:
 
