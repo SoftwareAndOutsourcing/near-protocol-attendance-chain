@@ -1,4 +1,4 @@
-near-protocol-attendance-chain
+NEAR Protocol Attendance Chain
 ==================
 
 This app was initialized with [create-near-app]

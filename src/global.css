@@ -26,7 +26,7 @@ body {
 
 main {
   margin: 0 auto;
-  max-width: 25em;
+  max-width: 35em;
 }
 
 h1 {
@@ -60,6 +60,16 @@ button, input {
   outline: none;
 }
 
+table, th, td {
+  border: 2px dashed var(--gray);
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 4px 8px;
+  font-size: calc((0.9em + 0.5vw)*0.7);
+}
+
 button {
   background-color: var(--secondary);
   border-radius: 5px;
@@ -68,6 +78,7 @@ button {
   cursor: pointer;
   padding: 0.3em 0.75em;
   transition: transform 30ms;
+  width: 100%;
 }
 button:hover, button:focus {
   box-shadow: 0 0 10em rgba(255, 255, 255, 0.2) inset;
@@ -123,6 +134,7 @@ input {
   caret-color: var(--primary);
   color: inherit;
   padding: 0.25em 1em;
+  width: 100%;
 }
 input::selection {
   background-color: var(--secondary);

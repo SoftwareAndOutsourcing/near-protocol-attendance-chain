@@ -6,7 +6,7 @@ import getConfig from './config'
 const { networkId } = getConfig(process.env.NODE_ENV || 'development')
 
 // global variable used throughout
-let currentGreeting
+let currentAttendances;
 
 const submitButton = document.querySelector('form button')
 
@@ -14,16 +14,28 @@ document.querySelector('form').onsubmit = async (event) => {
   event.preventDefault()
 
   // get elements from the form using their id attribute
-  const { fieldset, greeting } = event.target.elements
+  const {
+    fieldset,
+    studentId,
+    studentName,
+    schoolName,
+    lessonId,
+    subject,
+    loggedMinutes
+  } = event.target.elements
 
   // disable the form while the value gets updated on-chain
   fieldset.disabled = true
 
   try {
     // make an update call to the smart contract
-    await window.contract.setGreeting({
-      // pass the value that the user entered in the greeting field
-      message: greeting.value
+    await window.contract.addAttendance({
+      studentId: +studentId.value,
+      studentName: studentName.value,
+      schoolName: schoolName.value,
+      lessonId: +lessonId.value,
+      subject: subject.value,
+      loggedMinutes: +loggedMinutes.value
     })
   } catch (e) {
     alert(
@@ -37,11 +49,11 @@ document.querySelector('form').onsubmit = async (event) => {
     fieldset.disabled = false
   }
 
-  // disable the save button, since it now matches the persisted value
-  submitButton.disabled = true
+  // reset form
+  document.querySelector('form').reset();
 
-  // update the greeting in the UI
-  await fetchGreeting()
+  // update the attendances in the UI
+  await fetchAttendances();
 
   // show notification
   document.querySelector('[data-behavior=notification]').style.display = 'block'
@@ -49,15 +61,16 @@ document.querySelector('form').onsubmit = async (event) => {
   // remove notification again after css animation completes
   // this allows it to be shown again next time the form is submitted
   setTimeout(() => {
-    document.querySelector('[data-behavior=notification]').style.display = 'none'
+    document.querySelector('[data-behavior=notification]').style.display
+      = 'none'
   }, 11000)
 }
 
-document.querySelector('input#greeting').oninput = (event) => {
-  if (event.target.value !== currentGreeting) {
-    submitButton.disabled = false
+document.querySelector('form').oninput = (event) => {
+  if (document.querySelector('form').checkValidity()) {
+    submitButton.disabled = false;
   } else {
-    submitButton.disabled = true
+    submitButton.disabled = true;
   }
 }
 
@@ -89,19 +102,52 @@ function signedInFlow() {
   accountLink.href = accountLink.href.replace('testnet', networkId)
   contractLink.href = contractLink.href.replace('testnet', networkId)
 
-  fetchGreeting()
+  fetchAttendances()
 }
 
-// update global currentGreeting variable; update DOM with it
-async function fetchGreeting() {
-  currentGreeting = await contract.getGreeting({ accountId: window.accountId })
-  document.querySelectorAll('[data-behavior=greeting]').forEach(el => {
-    // set divs, spans, etc
-    el.innerText = currentGreeting
+// update global currentAttendances variable; update DOM with it
+async function fetchAttendances() {
+  currentAttendances = await contract.getAttendances({})
+  document.getElementById('currentAttendances').innerHTML
+    = getAttendancesTable(currentAttendances);
+}
 
-    // set input elements
-    el.value = currentGreeting
-  })
+const getAttendancesTable = (attendances) => {
+  let table = /*html*/`<table>
+    <thead>
+      <tr>
+        <th>Sender</th>
+        <th>Student Id</th>
+        <th>Student Name</th>
+        <th>School Name</th>
+        <th>Lesson Id</th>
+        <th>Subject</th>
+        <th>Logged Minutes</th>
+      </tr>      
+    </thead>
+    <tbody>`
+  if (!attendances.length) {
+    table += /*html*/`<tr>
+      <td colspan="7" style="text-align: center">No attendances yet</td>
+    </tr>`;
+  } else {
+    for (const attendance of attendances) {
+      table += /*html*/`<tr>
+        <td style="max-width: 7em; word-wrap: break-word">
+          ${attendance.sender}
+        </td>
+        <td>${attendance.studentId}</td>
+        <td>${attendance.studentName}</td>
+        <td>${attendance.schoolName}</td>
+        <td>${attendance.lessonId}</td>
+        <td>${attendance.subject}</td>
+        <td>${attendance.loggedMinutes}</td>
+      </tr>`
+    }
+  }
+  table += /*html*/`</tbody>
+  </table>`;
+  return table;
 }
 
 // `nearInitPromise` gets called on page load
