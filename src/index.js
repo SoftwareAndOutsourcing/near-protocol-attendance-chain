@@ -1,9 +1,9 @@
-import 'regenerator-runtime/runtime'
+import 'regenerator-runtime/runtime';
 
-import { initContract, login, logout } from './utils'
+import { initContract, login, logout } from './utils';
 
-import getConfig from './config'
-const { networkId } = getConfig(process.env.NODE_ENV || 'development')
+import getConfig from './config';
+const { networkId } = getConfig(process.env.NODE_ENV || 'development');
 
 // global variable used throughout
 let currentAttendances;
@@ -11,7 +11,7 @@ let currentAttendances;
 const submitButton = document.querySelector('form button')
 
 document.querySelector('form').onsubmit = async (event) => {
-  event.preventDefault()
+  event.preventDefault();
 
   // get elements from the form using their id attribute
   const {
@@ -22,10 +22,10 @@ document.querySelector('form').onsubmit = async (event) => {
     lessonId,
     subject,
     loggedMinutes
-  } = event.target.elements
+  } = event.target.elements;
 
   // disable the form while the value gets updated on-chain
-  fieldset.disabled = true
+  fieldset.disabled = true;
 
   try {
     // make an update call to the smart contract
@@ -36,7 +36,7 @@ document.querySelector('form').onsubmit = async (event) => {
       lessonId: +lessonId.value,
       subject: subject.value,
       loggedMinutes: +loggedMinutes.value
-    })
+    });
   } catch (e) {
     alert(
       'Something went wrong! ' +
@@ -46,7 +46,7 @@ document.querySelector('form').onsubmit = async (event) => {
     throw e
   } finally {
     // re-enable the form, whether the call succeeded or failed
-    fieldset.disabled = false
+    fieldset.disabled = false;
   }
 
   // reset form
@@ -56,14 +56,15 @@ document.querySelector('form').onsubmit = async (event) => {
   await fetchAttendances();
 
   // show notification
-  document.querySelector('[data-behavior=notification]').style.display = 'block'
+  document.querySelector('[data-behavior=notification]').style.display =
+    'block';
 
   // remove notification again after css animation completes
   // this allows it to be shown again next time the form is submitted
   setTimeout(() => {
     document.querySelector('[data-behavior=notification]').style.display
       = 'none'
-  }, 11000)
+  }, 11000);
 }
 
 document.querySelector('form').oninput = (event) => {
@@ -74,40 +75,40 @@ document.querySelector('form').oninput = (event) => {
   }
 }
 
-document.querySelector('#sign-in-button').onclick = login
-document.querySelector('#sign-out-button').onclick = logout
+document.querySelector('#sign-in-button').onclick = login;
+document.querySelector('#sign-out-button').onclick = logout;
 
 // Display the signed-out-flow container
 function signedOutFlow() {
-  document.querySelector('#signed-out-flow').style.display = 'block'
+  document.querySelector('#signed-out-flow').style.display = 'block';
 }
 
 // Displaying the signed in flow container and fill in account-specific data
 function signedInFlow() {
-  document.querySelector('#signed-in-flow').style.display = 'block'
+  document.querySelector('#signed-in-flow').style.display = 'block';
 
   document.querySelectorAll('[data-behavior=account-id]').forEach(el => {
-    el.innerText = window.accountId
+    el.innerText = window.accountId;
   })
 
   // populate links in the notification box
-  const accountLink = document.querySelector('[data-behavior=notification] a:nth-of-type(1)')
-  accountLink.href = accountLink.href + window.accountId
-  accountLink.innerText = '@' + window.accountId
-  const contractLink = document.querySelector('[data-behavior=notification] a:nth-of-type(2)')
-  contractLink.href = contractLink.href + window.contract.contractId
-  contractLink.innerText = '@' + window.contract.contractId
+  const accountLink = document.querySelector('[data-behavior=notification] a:nth-of-type(1)');
+  accountLink.href = accountLink.href + window.accountId;
+  accountLink.innerText = '@' + window.accountId;
+  const contractLink = document.querySelector('[data-behavior=notification] a:nth-of-type(2)');
+  contractLink.href = contractLink.href + window.contract.contractId;
+  contractLink.innerText = '@' + window.contract.contractId;
 
   // update with selected networkId
-  accountLink.href = accountLink.href.replace('testnet', networkId)
-  contractLink.href = contractLink.href.replace('testnet', networkId)
+  accountLink.href = accountLink.href.replace('testnet', networkId);
+  contractLink.href = contractLink.href.replace('testnet', networkId);
 
-  fetchAttendances()
+  fetchAttendances();
 }
 
 // update global currentAttendances variable; update DOM with it
 async function fetchAttendances() {
-  currentAttendances = await contract.getAttendances({})
+  currentAttendances = await contract.getAttendances({});
   document.getElementById('currentAttendances').innerHTML
     = getAttendancesTable(currentAttendances);
 }
@@ -142,7 +143,7 @@ const getAttendancesTable = (attendances) => {
         <td>${attendance.lessonId}</td>
         <td>${attendance.subject}</td>
         <td>${attendance.loggedMinutes}</td>
-      </tr>`
+      </tr>`;
     }
   }
   table += /*html*/`</tbody>
@@ -153,7 +154,10 @@ const getAttendancesTable = (attendances) => {
 // `nearInitPromise` gets called on page load
 window.nearInitPromise = initContract()
   .then(() => {
-    if (window.walletConnection.isSignedIn()) signedInFlow()
-    else signedOutFlow()
+    if (window.walletConnection.isSignedIn()) {
+      signedInFlow();
+    } else {
+      signedOutFlow();
+    }
   })
-  .catch(console.error)
+  .catch(console.error);
