@@ -3,13 +3,26 @@ beforeAll(async function () {
   const near = await nearlib.connect(nearConfig)
   window.accountId = nearConfig.contractName
   window.contract = await near.loadContract(nearConfig.contractName, {
-    viewMethods: ['getGreeting'],
-    changeMethods: [],
+    viewMethods: ['getAttendances'],
+    changeMethods: ['addAttendance'],
     sender: window.accountId
   })
 })
 
-test('getGreeting', async () => {
-  const message = await window.contract.getGreeting({ accountId: window.accountId })
-  expect(message).toEqual('Hello')
+
+test('add attendance', async () => {
+  await window.contract.addAttendance({
+    args: {
+      studentId: 1,
+      studentName: 'John',
+      schoolName: 'NEAR School',
+      lessonId: 2,
+      subject: 'Learning NEAR',
+      loggedMinutes: 90
+    }
+  });
+
+  const attendances = await window.contract.getAttendances();
+  expect(Array.isArray(attendances)).toBe(true);
+  expect(attendances.length).toBe(1);
 })

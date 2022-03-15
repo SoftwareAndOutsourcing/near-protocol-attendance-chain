@@ -1,9 +1,10 @@
-import { setGreeting } from '..'
-import { storage, Context } from 'near-sdk-as'
+import { addAttendance, getAttendances } from '..'
 
-describe('Greeting ', () => {
-  it('should be set and read', () => {
-    setGreeting('hello world')
-    storage.get<string>(Context.sender)
+describe('Attendance', () => {
+  it('should add an attendance and get it from the blockchain', () => {
+    addAttendance(1, 'John', 'NEAR School', 2, 'Learning NEAR', 90);
+    const attendances = getAttendances();
+    expect(Array.isArray(attendances)).toBe(true);
+    expect(attendances.length).toBe(1);
   })
 })
